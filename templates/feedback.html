@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Feedback</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f9f9f9; }
+        header { background-color: #e11f1f; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 1.5rem; }
+        .user-actions { display: flex; align-items: center; gap: 1rem; }
+        .user-actions a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        .user-actions span { margin-right: 0.5rem; }
+        .container { max-width: 600px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        form { display: flex; flex-direction: column; gap: 1rem; }
+        select, textarea { padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        button { padding: 0.75rem; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 1rem; }
+        .flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; text-align: center; }
+        .flash.success { background-color: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>IPS Academy</h1>
+        <div class="user-actions">
+            <a href="{{ url_for('contact') }}">Contact Us</a>
+            {% if current_user.is_authenticated %}
+                <span>Hello, {{ current_user.username }}!</span>
+                <a href="{{ url_for('my_events') }}">My Events</a>
+                <a href="{{ url_for('feedback') }}">Feedback</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Share Your Feedback</h1>
+        <p>Help us improve! Let us know what you think.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <label for="rating">Overall Rating:</label>
+            <select name="rating" id="rating" required>
+                <option value="5">★★★★★ - Excellent</option>
+                <option value="4">★★★★☆ - Good</option>
+                <option value="3">★★★☆☆ - Average</option>
+                <option value="2">★★☆☆☆ - Fair</option>
+                <option value="1">★☆☆☆☆ - Poor</option>
+            </select>
+            <label for="comment">Comments (optional):</label>
+            <textarea name="comment" id="comment" rows="5" placeholder="What did you like or dislike?"></textarea>
+            <button type="submit">Submit Feedback</button>
+        </form>
+    </div>
+</body>
+</html>
